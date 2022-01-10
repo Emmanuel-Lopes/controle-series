@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SeriesFormRequest;
+use App\Models\Episódio;
+use App\Models\Temporada;
 use Illuminate\Http\Request;
 use App\Serie;
 
@@ -22,7 +24,18 @@ class SeriesController extends Controller
     }
 
     public function store(SeriesFormRequest $request) {
-        $serie = Serie::create($request->all());
+        $serie = Serie::create(['nome' => $request -> nome]);
+
+        $temporadas = $request -> temporadas;
+        $episodios = $request -> episodios;
+        for ($i=1; $i <= $temporadas; $i++) { 
+            $temporada = $serie -> temporadas() -> create(['numero' => $i]);
+
+            for ($j=1; $j <= $episodios; $j++) { 
+               $temporada -> episodios() -> create(['numero' => $j]);
+            }
+        }
+
         $request->session()->flash('mensagem',
             "A série {$serie->nome} foi adicionada com sucesso. Id: {$serie->id}.");
         return redirect()->route(route: 'form_criar_serie');
@@ -30,8 +43,10 @@ class SeriesController extends Controller
 
     public function delete(Request $request){
         Serie::destroy($request->id);
+        Temporada::destroy($request->id);
+        Episódio::destroy($request->id);
         $request->session()->flash('mensagemRemocao',
             "A série foi removida com sucesso.");
-        return redirect()->route(route: 'listar_serie');
+        return redirect()->route(route: 'listar_series');
     }
 }

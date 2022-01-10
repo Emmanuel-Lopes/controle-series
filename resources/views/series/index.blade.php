@@ -17,14 +17,19 @@
         @foreach ($series as $serie)
             <li class="list-group-item justify-content-between d-flex align-items-center border border-dark rounded-3 fw-normal mb-2">
                 {{$serie -> nome}}
-                <form class="" action="/series/remover/{{$serie->id}}" method="post"
-                onsubmit="return confirm('Remover {{addslashes($serie->nome)}}?')">
-                    @csrf
-                    @method('DELETE')
-                    <button class="btn btn-danger btn-sm">
-                        <i class="far fa-trash-alt"></i>
-                    </button>
-                </form>
+                <span class="d-flex">
+                    <a href="/series/{{$serie->id}}/temporadas" class="btn btn-info btn-sm mr-3">
+                        <i class="fas fa-external-link-alt"></i>
+                    </a>
+                    <form class="" action="/series/remover/{{$serie->id}}" method="post"
+                    onsubmit="return confirm('Remover {{addslashes($serie->nome)}}?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger btn-sm">
+                            <i class="far fa-trash-alt"></i>
+                        </button>
+                    </form>
+                </span>
             </li>
         @endforeach
     </ul>
